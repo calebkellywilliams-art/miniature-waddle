@@ -1,0 +1,197 @@
+package dev.example.anubisinspired;
+
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class ClickGuiScreen extends Screen {
+
+    private final List<Module> modules = new ArrayList<>();
+
+    private String category = "Visuals";
+
+    public ClickGuiScreen() {
+        super(Component.literal("Anubis Client"));
+
+        modules.add(new Module("Fullbright", "Visuals"));
+        modules.add(new Module("Custom FOV", "Visuals"));
+        modules.add(new Module("Particles", "Visuals"));
+        modules.add(new Module("Motion Blur", "Visuals"));
+        modules.add(new Module("HUD", "HUD"));
+        modules.add(new Module("Coordinates", "HUD"));
+        modules.add(new Module("Keystrokes", "HUD"));
+        modules.add(new Module("Auto Sprint", "Movement"));
+        modules.add(new Module("Auto Jump", "Movement"));
+    }
+
+    @Override
+    public boolean isPauseScreen() {
+        return false;
+    }
+
+    @Override
+    public void render(
+            GuiGraphics graphics,
+            int mouseX,
+            int mouseY,
+            float delta
+    ) {
+        int width = this.width;
+        int height = this.height;
+
+        graphics.fill(
+                0, 0, width, height,
+                0x99000000
+        );
+
+        int panelX = width / 2 - 300;
+        int panelY = height / 2 - 200;
+
+        graphics.fill(
+                panelX,
+                panelY,
+                panelX + 600,
+                panelY + 400,
+                0xFF171B22
+        );
+
+        graphics.drawString(
+                font,
+                "ANUBIS CLIENT",
+                panelX + 20,
+                panelY + 20,
+                0xFFFFFFFF
+        );
+
+        String[] categories = {
+                "Visuals",
+                "HUD",
+                "Movement"
+        };
+
+        int categoryY = panelY + 60;
+
+        for (String name : categories) {
+
+            boolean selected = name.equals(category);
+
+            if (selected) {
+                graphics.fill(
+                        panelX + 10,
+                        categoryY - 5,
+                        panelX + 130,
+                        categoryY + 20,
+                        0xFF3478F6
+                );
+            }
+
+            graphics.drawString(
+                    font,
+                    name,
+                    panelX + 20,
+                    categoryY,
+                    0xFFFFFFFF
+            );
+
+            categoryY += 35;
+        }
+
+        int moduleX = panelX + 150;
+        int moduleY = panelY + 60;
+
+        for (Module module : modules) {
+
+            if (!module.category.equals(category)) {
+                continue;
+            }
+
+            graphics.fill(
+                    moduleX,
+                    moduleY,
+                    moduleX + 420,
+                    moduleY + 35,
+                    0xFF242A33
+            );
+
+            graphics.drawString(
+                    font,
+                    module.name,
+                    moduleX + 12,
+                    moduleY + 12,
+                    0xFFFFFFFF
+            );
+
+            graphics.drawString(
+                    font,
+                    module.enabled ? "ON" : "OFF",
+                    moduleX + 380,
+                    moduleY + 12,
+                    module.enabled
+                            ? 0xFF55AAFF
+                            : 0xFF888888
+            );
+
+            moduleY += 45;
+        }
+
+        super.render(
+                graphics,
+                mouseX,
+                mouseY,
+                delta
+        );
+    }
+
+    @Override
+    public boolean mouseClicked(
+            double mouseX,
+            double mouseY,
+            int button
+    ) {
+        int panelX = width / 2 - 300;
+        int panelY = height / 2 - 200;
+
+        int moduleX = panelX + 150;
+        int moduleY = panelY + 60;
+
+        for (Module module : modules) {
+
+            if (!module.category.equals(category)) {
+                continue;
+            }
+
+            if (mouseX >= moduleX
+                    && mouseX <= moduleX + 420
+                    && mouseY >= moduleY
+                    && mouseY <= moduleY + 35) {
+
+                module.enabled = !module.enabled;
+                return true;
+            }
+
+            moduleY += 45;
+        }
+
+        return super.mouseClicked(
+                mouseX,
+                mouseY,
+                button
+        );
+    }
+
+    private static class Module {
+
+        String name;
+        String category;
+        boolean enabled;
+
+        Module(String name, String category) {
+            this.name = name;
+            this.category = category;
+            this.enabled = false;
+        }
+    }
+}
