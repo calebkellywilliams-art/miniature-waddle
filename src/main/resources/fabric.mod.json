@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "anubis_inspired",
+  "version": "${version}",
+  "name": "Anubis-Inspired Client",
+  "description": "A custom Click GUI prototype with visual and quality-of-life toggles.",
+  "authors": ["You"],
+  "environment": "client",
+  "entrypoints": {
+    "client": ["dev.example.anubisinspired.AnubisInspiredClient"]
+  },
+  "depends": {
+    "fabricloader": ">=0.18.0",
+    "minecraft": "1.21.11",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}
